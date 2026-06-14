@@ -1,0 +1,295 @@
+/* =====================================================================
+   ABOUT PAGE  (about.html)
+   Builds on global.css + nav-hero.css (shared topbar/nav/hero/footer).
+   Sections:
+     1) #about-intro — text + skill bars | image w/ card  → stats row
+     2) #about-team  — centered header → 3 expert cards
+===================================================================== */
+
+/* =====================================================================
+   1. ABOUT INTRO
+===================================================================== */
+#about-intro { background: var(--bg-white); }
+
+.about-intro-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+@media (min-width: 992px) {
+  .about-intro-grid { grid-template-columns: 1fr 1fr; gap: 4rem; }
+}
+
+/* ── Left: text ── */
+.about-intro-text h2 {
+  color: var(--text-primary);
+  font-size: clamp(1.9rem, 4.5vw, 3rem);
+  line-height: 1.05;
+  margin-bottom: 1.1rem;
+}
+.about-intro-lead {
+  color: var(--text-body);
+  max-width: 52ch;
+  margin-bottom: 1.75rem;
+}
+
+/* Checklist — 2 columns */
+.about-checklist {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem 1.5rem;
+  margin-bottom: 2rem;
+}
+@media (min-width: 560px) {
+  .about-checklist { grid-template-columns: 1fr 1fr; }
+}
+.about-checklist li {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.02rem;
+  color: var(--text-primary);
+}
+.about-check-icon {
+  flex-shrink: 0;
+  width: 1.6rem;
+  height: 1.6rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1.5px solid var(--maroon);
+  color: var(--maroon);
+}
+.about-check-icon svg { width: 0.85rem; height: 0.85rem; }
+
+/* Skill bars */
+.about-skills { display: flex; flex-direction: column; gap: 1.4rem; }
+.about-skill-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.55rem;
+}
+.about-skill-top span:first-child {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--text-primary);
+}
+.about-skill-top span:last-child {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--maroon);
+}
+.about-skill-track {
+  height: 8px;
+  background: var(--grey-100);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.about-skill-fill {
+  height: 100%;
+  width: 0;                       /* animates to --pct when section reveals */
+  background: var(--maroon);
+  border-radius: 99px;
+  transition: width 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.about-intro-text.is-visible .about-skill-fill { width: var(--pct, 0); }
+
+/* ── Right: image + floating card ── */
+.about-intro-media { position: relative; }
+.about-intro-img {
+  width: 100%;
+  height: 100%;
+  max-height: 540px;
+  object-fit: cover;
+  display: block;
+}
+.about-intro-card {
+  position: absolute;
+  left: 1.25rem;
+  bottom: 1.25rem;
+  /* never wider than the image it sits on (prevents x-overflow on phones) */
+  max-width: min(300px, calc(100% - 2.5rem));
+  background: var(--bg-dark);
+  color: var(--white);
+  padding: 1.75rem;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
+}
+@media (min-width: 768px) {
+  .about-intro-card { left: -1.5rem; bottom: 2rem; }
+}
+.about-intro-card-icon {
+  width: 3rem;
+  height: 3rem;
+  display: grid;
+  place-items: center;
+  background: var(--maroon);
+  color: var(--white);
+  margin-bottom: 1.1rem;
+}
+.about-intro-card-icon svg { width: 1.5rem; height: 1.5rem; }
+.about-intro-card-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--white);
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+.about-intro-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--maroon-lt);
+  transition: gap var(--transition), color var(--transition);
+}
+.about-intro-card-link:hover { gap: 0.7rem; color: var(--white); }
+.about-intro-card-link svg { width: 0.95rem; height: 0.95rem; }
+
+/* ── Stats row ── */
+.about-stats-grid {
+  display: grid;
+  /* minmax(0, 1fr) lets tracks shrink below their content's intrinsic width,
+     so cards can't push past the screen edge on narrow phones */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-top: 4.5rem;
+}
+@media (min-width: 992px) {
+  .about-stats-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; margin-top: 6rem; }
+}
+.about-stat-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--grey-50);
+  border: 1px solid var(--grey-200);
+  padding: 1.5rem;
+}
+/* Let the number/label block shrink so long labels wrap instead of
+   forcing the card wider than its column */
+.about-stat-card > div { min-width: 0; }
+
+/* Tighten the cards on small phones */
+@media (max-width: 480px) {
+  .about-stat-card { padding: 1.1rem; gap: 0.75rem; }
+  .about-stat-icon { width: 2.4rem; height: 2.4rem; }
+  .about-stat-num  { font-size: 1.55rem; }
+  .about-stat-label { font-size: 0.8rem; }
+}
+.about-stat-icon {
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  color: var(--maroon);
+}
+.about-stat-icon svg { width: 100%; height: 100%; }
+.about-stat-num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  line-height: 1;
+  color: var(--text-primary);
+}
+.about-stat-label {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* =====================================================================
+   2. ABOUT TEAM
+===================================================================== */
+#about-team { background: var(--bg-light); }
+
+.about-team-header {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 3rem;
+}
+.about-team-header .eyebrow { justify-content: center; }
+.about-team-header h2 {
+  color: var(--text-primary);
+  font-size: clamp(2rem, 5vw, 3.4rem);
+}
+
+.about-team-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+@media (min-width: 600px)  { .about-team-grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 992px)  { .about-team-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.about-team-card { display: flex; flex-direction: column; }
+.about-team-img {
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+}
+.about-team-img img {
+  width: 100%;
+  height: 360px;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  transition: transform 0.6s ease;
+}
+.about-team-card:hover .about-team-img img { transform: scale(1.05); }
+
+.about-team-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--grey-200);
+}
+.about-team-info h3 {
+  font-size: 1.3rem;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+  /* grow + recolor from the left edge on hover */
+  transform-origin: left center;
+  transition: color var(--transition), transform var(--transition);
+}
+.about-team-role {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  transform-origin: left center;
+  transition: color var(--transition), transform var(--transition);
+}
+/* Hover: name + role scale up and turn maroon (transform = no layout shift) */
+.about-team-card:hover .about-team-info h3 {
+  color: var(--maroon);
+  transform: scale(1.08);
+}
+.about-team-card:hover .about-team-role {
+  color: var(--maroon-lt);
+  transform: scale(1.04);
+}
+.about-team-link {
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--grey-300);
+  color: var(--text-primary);
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+.about-team-link:hover {
+  background: var(--maroon);
+  border-color: var(--maroon);
+  color: var(--white);
+}
+.about-team-link svg { width: 1.1rem; height: 1.1rem; }

@@ -1,0 +1,498 @@
+/* =============================================================================
+   RIDGELINE POOLS — custom-builds.css
+   "Build Your Pool" configurator: sticky pill filter rail → gallery-led grid
+   → pinned live budget card. Loads after global.css + nav-hero.css.
+   Mobile-first.
+============================================================================= */
+
+/* =============================================================================
+   CONFIGURATOR — shell + header
+============================================================================= */
+#configurator { background: var(--grey-50); overflow-x: clip; }
+
+.cfg-header {
+  max-width: 760px;
+  margin: 0 auto 2.5rem;
+  text-align: center;
+}
+.cfg-header .eyebrow { justify-content: center; }
+.cfg-header h2 { margin-bottom: 1rem; }
+.cfg-subtext {
+  color: var(--text-body);
+  font-size: 1rem;
+  max-width: 60ch;
+  margin: 0 auto;
+}
+@media (min-width: 768px) { .cfg-subtext { font-size: 1.1rem; } }
+
+/* =============================================================================
+   FILTER TOOLBAR — horizontal, grouped pills
+============================================================================= */
+.cfg-toolbar {
+  background: var(--white);
+  border: 1px solid var(--grey-200);
+  border-radius: 14px;
+  padding: 1.25rem;
+  display: grid;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+}
+@media (min-width: 768px) {
+  .cfg-toolbar {
+    grid-template-columns: 1fr 1fr;
+    padding: 1.75rem;
+    gap: 1.75rem 2.5rem;
+  }
+}
+@media (min-width: 1200px) { .cfg-toolbar { grid-template-columns: repeat(4, 1fr); } }
+
+.cfg-group { min-width: 0; }
+
+.cfg-group-label {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.85rem;
+}
+.cfg-group-label b {
+  color: var(--maroon-lt);
+  font-weight: 700;
+  margin-right: 0.4rem;
+}
+
+.cfg-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+/* Tablet/desktop: stack each group's options into a single left-aligned column
+   (matching Add-ons) so every group reads consistently instead of wrapping 2-up.
+   Mobile keeps the row-wrap layout that already looks good. */
+@media (min-width: 768px) {
+  .cfg-pills { flex-direction: column; flex-wrap: nowrap; align-items: flex-start; }
+}
+
+/* ── Pill toggle ──────────────────────────────────────────────────────── */
+.cfg-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.9rem;
+  background: var(--white);
+  border: 1.5px solid var(--grey-200);
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-body);
+  cursor: pointer;
+  line-height: 1.1;
+  transition: border-color var(--transition), background var(--transition),
+              color var(--transition), transform var(--transition);
+}
+.cfg-pill svg { width: 1rem; height: 1rem; flex-shrink: 0; color: var(--grey-400); transition: color var(--transition); }
+.cfg-pill:hover { border-color: var(--maroon-lt); transform: translateY(-1px); }
+.cfg-pill:hover svg { color: var(--maroon-lt); }
+
+.cfg-pill.is-active {
+  background: var(--maroon);
+  border-color: var(--maroon);
+  color: var(--white);
+}
+.cfg-pill.is-active svg { color: var(--white); }
+
+/* Tiny add-on price hint inside a pill */
+.cfg-pill small {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--maroon-lt);
+  transition: color var(--transition);
+}
+.cfg-pill.is-active small { color: rgba(255,255,255,0.85); }
+
+/* Reset spans the full toolbar width on its own row */
+.cfg-toolbar-foot {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid var(--grey-200);
+  padding-top: 1rem;
+  margin-top: -0.25rem;
+}
+.cfg-reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: none;
+  transition: color var(--transition);
+}
+.cfg-reset:hover { color: var(--maroon); }
+.cfg-reset svg { width: 0.95rem; height: 0.95rem; }
+
+/* =============================================================================
+   MAIN — gallery + pinned estimate
+============================================================================= */
+.cfg-main { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+
+@media (min-width: 1024px) {
+  .cfg-main { grid-template-columns: 1fr 360px; gap: 2.5rem; align-items: start; }
+  .cfg-results  { grid-column: 1; grid-row: 1; min-width: 0; }
+  .cfg-estimate { grid-column: 2; grid-row: 1; }
+}
+
+/* ── Results header ───────────────────────────────────────────────────── */
+.cfg-results-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 1.1rem;
+}
+.cfg-results-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+.cfg-count-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--grey-600);
+  color: var(--white);
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.cfg-count-pill b { color: var(--white); font-weight: 700; }
+.cfg-count-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--maroon-lt); }
+
+/* ── Gallery grid ─────────────────────────────────────────────────────── */
+.cfg-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.85rem;
+}
+@media (min-width: 1280px) { .cfg-gallery { grid-template-columns: repeat(3, 1fr); } }
+
+.cfg-card {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--grey-200);
+  line-height: 0;
+  aspect-ratio: 4 / 5;
+}
+.cfg-card.is-hidden { display: none; }
+
+.cfg-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+.cfg-card:hover img { transform: scale(1.06); }
+
+/* Gradient + caption */
+.cfg-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10,10,10,0.78) 0%, rgba(10,10,10,0) 55%);
+  pointer-events: none;
+}
+.cfg-card-cap {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  z-index: 2;
+  padding: 0.8rem 0.9rem;
+  line-height: 1.3;
+}
+.cfg-card-meta {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.82);
+  text-transform: capitalize;
+  margin-bottom: 0.15rem;
+}
+.cfg-card-tier {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.03em;
+  color: var(--white);
+}
+
+/* Tier badge top-left */
+.cfg-card-badge {
+  position: absolute;
+  top: 0.7rem; left: 0.7rem;
+  z-index: 2;
+  background: var(--maroon);
+  color: var(--white);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.68rem 0.55rem;
+  border-radius: 5px;
+}
+
+/* No results */
+.cfg-noresults {
+  text-align: center;
+  padding: 3.5rem 1rem;
+  color: var(--text-muted);
+  border: 1px dashed var(--grey-300);
+  border-radius: 12px;
+}
+.cfg-noresults strong { color: var(--text-primary); display: block; margin-bottom: 0.3rem; font-family: var(--font-display); font-size: 1.1rem; }
+
+/* =============================================================================
+   ESTIMATE CARD — pinned budget
+============================================================================= */
+.cfg-estimate {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--grey-200);
+  background: var(--white);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.06);
+}
+@media (min-width: 1024px) {
+  .cfg-estimate { position: sticky; top: 5.5rem; align-self: start; }
+}
+
+.cfg-est-head {
+  background: var(--grey-600);
+  padding: 0.9rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.cfg-est-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+.cfg-est-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  color: var(--grey-300);
+}
+.cfg-est-live .cfg-count-dot { background: #41d77a; }
+
+.cfg-est-body { padding: 1.5rem 1.25rem; }
+
+.cfg-est-range {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.9rem, 4.5vw, 2.4rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--maroon);
+}
+.cfg-est-note {
+  margin-top: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* Breakdown boxes */
+.cfg-breakdown {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin: 1.25rem 0;
+}
+.cfg-box {
+  border: 1px solid var(--grey-200);
+  border-radius: 8px;
+  padding: 0.6rem 0.65rem;
+}
+.cfg-box-label {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.2rem;
+}
+.cfg-box-val {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+/* Selected add-ons row */
+.cfg-selected {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.7rem 0.85rem;
+  background: var(--grey-50);
+  border: 1px solid var(--grey-200);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: var(--text-body);
+  margin-bottom: 1.25rem;
+}
+.cfg-selected svg { width: 1rem; height: 1rem; color: var(--maroon); flex-shrink: 0; margin-top: 0.1rem; }
+.cfg-selected b { color: var(--text-primary); font-weight: 700; }
+
+/* Actions */
+.cfg-est-actions { display: flex; flex-direction: column; gap: 0.6rem; }
+.cfg-quote-btn { width: 100%; justify-content: center; }
+.cfg-save-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.25rem;
+  background: var(--white);
+  border: 1.5px solid var(--grey-300);
+  border-radius: 6px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  transition: border-color var(--transition), color var(--transition), background var(--transition);
+}
+.cfg-save-btn:hover { border-color: var(--maroon); color: var(--maroon); }
+.cfg-save-btn svg { width: 1rem; height: 1rem; }
+
+/* Luxury add-ons link */
+.cfg-luxury {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--grey-200);
+  border-left: 3px solid var(--maroon);
+  border-radius: 8px;
+  background: var(--white);
+}
+.cfg-luxury svg { width: 1.1rem; height: 1.1rem; color: var(--maroon); flex-shrink: 0; }
+.cfg-luxury span { flex: 1; font-size: 0.85rem; color: var(--text-body); }
+.cfg-luxury a {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--maroon);
+  white-space: nowrap;
+}
+.cfg-luxury a:hover { color: var(--maroon-dk); }
+
+/* Disclaimer */
+.cfg-disclaimer {
+  margin-top: 1rem;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+.cfg-disclaimer a { color: var(--maroon); text-decoration: underline; text-underline-offset: 2px; }
+
+/* =============================================================================
+   PRINT — clean "saved estimate"
+============================================================================= */
+@media print {
+  #topbar, #navbar, .nav-overlay, .page-hero, .cfg-header,
+  .cfg-toolbar, .cfg-results, #footer, .scroll-top-btn,
+  .cfg-est-actions, .cfg-luxury, .cfg-est-live { display: none !important; }
+
+  .cfg-main { display: block !important; }
+  .cfg-estimate {
+    position: static !important;
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    page-break-inside: avoid;
+  }
+  .cfg-est-head { background: #2a2a2a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  #configurator::before {
+    content: 'RIDGELINE POOLS — Custom Pool Estimate';
+    display: block;
+    font-family: sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1278C7;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid #1278C7;
+  }
+  @page { margin: 1.5cm; size: A4; }
+  .cfg-finish-preview { display: none !important; }
+}
+
+/* =============================================================================
+   FINISH PREVIEW — appears under the Finish options when one is chosen
+============================================================================= */
+.cfg-finish-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+}
+.cfg-finish-preview[hidden] { display: none; }
+
+.cfg-finish-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.7rem;
+  background: var(--white);
+  border: 1px solid var(--grey-200);
+  border-left: 3px solid var(--maroon);
+  border-radius: 8px;
+  animation: cfgPop 0.28s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.cfg-finish-swatch {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 6px;
+  flex-shrink: 0;
+  border: 1px solid rgba(0,0,0,0.15);
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.18);
+}
+
+.cfg-finish-text { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; line-height: 1.3; }
+.cfg-finish-text strong {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.01em;
+  color: var(--text-primary);
+}
+.cfg-finish-text span { font-size: 0.78rem; color: var(--text-muted); }
+
+@keyframes cfgPop {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

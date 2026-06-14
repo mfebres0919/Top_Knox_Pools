@@ -1,0 +1,70 @@
+/* =============================================================================
+   RIDGELINE POOLS — privacy-policy.css
+   Simple legal/long-form content page. Loads after global.css + nav-hero.css.
+============================================================================= */
+
+#legal { background: var(--grey-50); }
+
+.legal-card {
+  max-width: 900px;
+  margin: 0 auto;
+  background: var(--white);
+  border: 1px solid var(--grey-200);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.05);
+  padding: 2.25rem 1.5rem;
+}
+@media (min-width: 768px) { .legal-card { padding: 3.5rem 3rem; } }
+
+.legal-updated {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 2.25rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--grey-200);
+}
+
+.legal-block + .legal-block { margin-top: 2.25rem; }
+
+.legal-block h2 {
+  font-size: clamp(1.35rem, 3vw, 1.85rem);
+  margin-bottom: 0.7rem;
+}
+
+.legal-block p {
+  color: var(--text-body);
+  line-height: 1.8;
+  margin-bottom: 0.85rem;
+}
+.legal-block p:last-child { margin-bottom: 0; }
+
+/* Bulleted list with square maroon markers (matches the site's no-radius theme) */
+.legal-list {
+  margin: 0.6rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.legal-list li {
+  position: relative;
+  padding-left: 1.5rem;
+  color: var(--text-body);
+  line-height: 1.65;
+}
+.legal-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 7px;
+  height: 7px;
+  background: var(--maroon-lt);
+}
+
+.legal-block a {
+  color: var(--maroon);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.legal-block a:hover { color: var(--maroon-dk); }
+
+.legal-contact-line { font-weight: 600; color: var(--text-primary); }

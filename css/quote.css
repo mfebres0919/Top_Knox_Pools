@@ -1,0 +1,623 @@
+/* ============================================================
+   RIDGELINE POOLS v2 — quote.css
+   Multi-step quote form — Meridian-inspired card selection
+   Adapted to white-base / maroon accent design system
+   ============================================================ */
+
+/* ── Page layout ── */
+#quote-page {
+  background: var(--grey-100);
+  min-height: 100svh;
+}
+
+/* ══════════════════════════════════════════════
+   QUOTE FORM SECTION
+   Centered single card, max-width container
+══════════════════════════════════════════════ */
+
+#quote-form-section {
+  padding: 3.5rem 0 6rem;
+}
+
+@media (min-width: 768px) {
+  #quote-form-section { padding: 5rem 0 8rem; }
+}
+
+/* Progress bar — lives INSIDE the quote card, above the nav buttons */
+.quote-progress-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--grey-200);
+  /* Remove the separate card look */
+  background: none;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  max-width: none;
+  margin: 0;
+  padding-bottom: 0;
+}
+
+.quote-progress-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.quote-progress-step-label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--grey-500);
+}
+
+.quote-progress-pct {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--maroon);
+}
+
+.quote-progress-track {
+  width: 100%;
+  height: 4px;
+  background: var(--grey-200);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.quote-progress-fill {
+  height: 100%;
+  background: var(--maroon);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Main question card ── */
+.quote-card {
+  background: var(--white);
+  border: 1px solid var(--grey-200);
+  border-radius: 16px;
+  padding: 2.5rem 1.75rem;
+  max-width: 780px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem; /* more space between question, options, and nav */
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+
+@media (min-width: 768px) {
+  .quote-card { padding: 3.5rem 4rem; }
+}
+
+/* Question + hint inside the card */
+.quote-step-question {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
+  text-transform: uppercase;
+  color: var(--text-primary);
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+}
+
+.quote-step-hint {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-top: -1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ══════════════════════════════════════════════
+   SERVICE SELECTOR CARDS (Step 1)
+   2-col grid, tall icon-led cards
+══════════════════════════════════════════════ */
+
+.quote-service-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+@media (min-width: 600px) {
+  .quote-service-grid { gap: 1rem; }
+}
+
+/* Each service card is a <button> */
+.quote-service-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1.5rem 1.25rem;
+  border: 2px solid var(--grey-200);
+  border-radius: 12px;
+  background: var(--grey-50);
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: background var(--transition), border-color var(--transition), transform var(--transition);
+  font-family: var(--font-body);
+}
+
+.quote-service-card:hover {
+  background: rgba(18,120,199,0.03);
+  border-color: rgba(18,120,199,0.25);
+  transform: translateY(-2px);
+}
+
+/* Selected state */
+.quote-service-card.is-selected {
+  background: rgba(18,120,199,0.06);
+  border-color: var(--maroon);
+  transform: translateY(-2px);
+}
+
+/* Icon box */
+.quote-service-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--grey-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background var(--transition);
+}
+.quote-service-icon svg {
+  width: 22px;
+  height: 22px;
+  color: var(--grey-500);
+  transition: color var(--transition);
+}
+
+.quote-service-card.is-selected .quote-service-icon {
+  background: var(--maroon);
+}
+.quote-service-card.is-selected .quote-service-icon svg {
+  color: var(--white);
+}
+
+.quote-service-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.88rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.quote-service-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+/* ══════════════════════════════════════════════
+   STANDARD OPTION ROWS
+   Full-width horizontal buttons with radio dot
+══════════════════════════════════════════════ */
+
+.quote-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* more breathing room */
+}
+
+.quote-option {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 1.4rem; /* taller tap targets */
+  border: 1.5px solid var(--grey-200);
+  border-radius: 10px;
+  background: var(--grey-50);
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 0.97rem;
+  font-weight: 500;
+  color: var(--text-body);
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.quote-option:hover {
+  background: rgba(18,120,199,0.03);
+  border-color: rgba(18,120,199,0.25);
+}
+
+.quote-option.is-selected {
+  background: rgba(18,120,199,0.06);
+  border-color: var(--maroon);
+  color: var(--maroon);
+  font-weight: 600;
+}
+
+/* Radio dot — circle */
+.quote-option-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--grey-300);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.quote-option.is-selected .quote-option-dot {
+  background: var(--maroon);
+  border-color: var(--maroon);
+}
+
+/* Inner dot fill */
+.quote-option-dot::after {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--white);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.quote-option.is-selected .quote-option-dot::after { opacity: 1; }
+
+/* Multi-select variant — square dot with checkmark */
+.quote-option.is-multi .quote-option-dot {
+  border-radius: 5px;
+}
+.quote-option.is-multi.is-selected .quote-option-dot::after {
+  content: '✓';
+  font-size: 0.65rem;
+  font-weight: 900;
+  opacity: 1;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: none;
+  color: var(--white);
+}
+
+/* ══════════════════════════════════════════════
+   BUDGET SLIDER STEP
+══════════════════════════════════════════════ */
+
+.budget-display {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+.budget-display .accent { color: var(--maroon); }
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: var(--grey-200);
+  outline: none;
+  border-radius: 2px;
+  border: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  background: var(--maroon);
+  cursor: pointer;
+  border-radius: 50%;
+  border: 3px solid var(--white);
+  box-shadow: 0 0 0 2px var(--maroon);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  background: var(--maroon);
+  cursor: pointer;
+  border-radius: 50%;
+  border: 3px solid var(--white);
+}
+
+.budget-range-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+.budget-range-labels span {
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--grey-300);
+}
+
+/* ══════════════════════════════════════════════
+   TEXT INPUT STEPS (contact info)
+══════════════════════════════════════════════ */
+
+.quote-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.quote-input-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 600px) {
+  .quote-input-row { grid-template-columns: 1fr 1fr; }
+}
+
+.quote-input-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.quote-input-field label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--grey-500);
+}
+
+.quote-input-field input,
+.quote-input-field select {
+  background: var(--grey-50);
+  border: 1.5px solid var(--grey-200);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  padding: 0.875rem 1rem;
+  border-radius: 8px;
+  outline: none;
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color var(--transition), background var(--transition);
+}
+.quote-input-field input:focus,
+.quote-input-field select:focus {
+  border-color: var(--maroon);
+  background: var(--white);
+}
+.quote-input-field input::placeholder { color: var(--grey-300); }
+
+/* ══════════════════════════════════════════════
+   NAV BUTTONS (back / next)
+══════════════════════════════════════════════ */
+
+.quote-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--grey-200);
+}
+
+.quote-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--grey-400);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color var(--transition);
+}
+.quote-back:hover { color: var(--text-primary); }
+.quote-back svg { width: 16px; height: 16px; }
+
+.quote-next {
+  margin-left: auto;
+}
+
+/* ══════════════════════════════════════════════
+   SUCCESS STATE
+══════════════════════════════════════════════ */
+
+.quote-success {
+  background: var(--white);
+  border: 1px solid var(--grey-200);
+  border-radius: 16px;
+  padding: 4rem 2rem;
+  max-width: 780px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.25rem;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+
+.quote-success-icon {
+  width: 68px;
+  height: 68px;
+  background: var(--maroon);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.quote-success-icon svg { width: 34px; height: 34px; color: var(--white); }
+.quote-success h2 { color: var(--text-primary); }
+.quote-success p { color: var(--text-body); max-width: 420px; }
+
+/* ══════════════════════════════════════════════
+   WHAT HAPPENS NEXT — background via picture tag
+══════════════════════════════════════════════ */
+
+#quote-next-section {
+  position: relative;
+  overflow: hidden;
+  padding: 5rem 0;
+}
+
+@media (min-width: 768px) { #quote-next-section { padding: 6rem 0; } }
+
+/* Background image — picture tag, same pattern as hero sections */
+.quote-next-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.quote-next-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* Dark overlay for text legibility */
+#quote-next-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(10,10,10,0.75);
+  z-index: 1;
+}
+
+/* All content sits above overlay */
+#quote-next-section > .container {
+  position: relative;
+  z-index: 2;
+}
+
+.quote-next-header {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+
+.quote-next-header .eyebrow {
+  justify-content: center;
+  color: var(--maroon-lt);
+}
+.quote-next-header .eyebrow::before { background: var(--maroon-lt); }
+.quote-next-header h2 { color: var(--white); }
+
+/* 4-card horizontal grid */
+.quote-next-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: rgba(255,255,255,0.06);
+}
+
+@media (min-width: 600px) { .quote-next-grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1024px) { .quote-next-grid { grid-template-columns: repeat(4, 1fr); } }
+
+.quote-next-card {
+  background: var(--bg-dark);
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+  transition: background var(--transition);
+}
+.quote-next-card:hover { background: #1a1a1a; }
+
+/* Top maroon accent line on hover */
+.quote-next-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: transparent;
+  transition: background var(--transition);
+}
+.quote-next-card:hover::before { background: var(--maroon); }
+
+/* Step number — large ghost text */
+.quote-next-num {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 3.5rem;
+  line-height: 1;
+  color: rgba(255,255,255,0.06);
+  letter-spacing: -0.04em;
+  margin-bottom: -0.5rem;
+}
+
+.quote-next-icon {
+  width: 44px;
+  height: 44px;
+  background: rgba(18,120,199,0.2);
+  border: 1px solid rgba(18,120,199,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.quote-next-icon svg { width: 22px; height: 22px; color: var(--maroon-lt); }
+
+.quote-next-card h4 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--white);
+}
+
+.quote-next-card p {
+  font-size: 0.85rem;
+  color: var(--grey-300);
+  line-height: 1.7;
+}
+
+/* Promises strip below the grid */
+.quote-promises-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem 3rem;
+  margin-top: 3rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+.quote-promise-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--grey-300);
+}
+.quote-promise-item svg { width: 15px; height: 15px; color: var(--maroon-lt); flex-shrink: 0; }

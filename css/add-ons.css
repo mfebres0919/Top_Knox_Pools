@@ -1,0 +1,283 @@
+/* =============================================================================
+   RIDGELINE POOLS — add-ons.css
+   Luxury Features & Add-Ons: filterable card grid with a maroon gradient +
+   default caption that fades on hover, and a click-to-enlarge lightbox.
+   Loads after global.css + nav-hero.css. Mobile-first.
+============================================================================= */
+
+#addons { background: var(--grey-50); }
+
+/* ── Header ───────────────────────────────────────────────────────────── */
+.addon-header { max-width: 760px; margin: 0 auto 2rem; text-align: center; }
+.addon-header .eyebrow { justify-content: center; }
+.addon-header h2 { margin-bottom: 1rem; }
+.addon-header p { color: var(--text-body); max-width: 60ch; margin: 0 auto; }
+
+/* ── Filter pills ─────────────────────────────────────────────────────── */
+.addon-filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 2.5rem;
+}
+.addon-filter {
+  padding: 0.5rem 1.1rem;
+  background: var(--white);
+  border: 1.5px solid var(--grey-200);
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-body);
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition),
+              color var(--transition), transform var(--transition);
+}
+.addon-filter:hover { border-color: var(--maroon-lt); transform: translateY(-1px); }
+.addon-filter.is-active { background: var(--maroon); border-color: var(--maroon); color: var(--white); }
+
+/* ── Grid ─────────────────────────────────────────────────────────────── */
+.addon-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+@media (min-width: 600px)  { .addon-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; } }
+@media (min-width: 992px)  { .addon-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; } }
+
+/* ── Card ─────────────────────────────────────────────────────────────── */
+.addon-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  border: none;
+  border-radius: 0;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: var(--grey-300);
+  cursor: pointer;
+}
+.addon-card.is-hidden { display: none; }
+
+.addon-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+
+/* Maroon gradient (default on) */
+.addon-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(to top,
+    rgba(30, 0, 0, 0.92) 0%,
+    rgba(46, 0, 0, 0.2) 42%,
+    rgba(0, 0, 0, 0.12) 100%);
+  transition: opacity 0.35s ease;
+}
+
+/* Default caption (title + desc + price) */
+.addon-info {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  z-index: 2;
+  padding: 1rem 1.1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  transition: opacity 0.3s ease, transform 0.35s ease;
+}
+.addon-info-cat {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.8);
+}
+.addon-info-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.3rem;
+  line-height: 1.05;
+  color: var(--white);
+}
+.addon-info-desc {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: rgba(255,255,255,0.85);
+  margin-top: 0.1rem;
+}
+.addon-info-price {
+  align-self: flex-start;
+  margin-top: 0.6rem;
+  background: rgba(255,255,255,0.16);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  color: var(--white);
+}
+
+/* Click-to-enlarge cue (appears on hover) */
+.addon-zoom {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  z-index: 3;
+  width: 3rem; height: 3rem;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.92);
+  color: var(--maroon);
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.addon-zoom svg { width: 1.3rem; height: 1.3rem; }
+
+/* Hover/focus: gradient + caption fade out, image zooms, cue appears.
+   Wrapped in hover-capable query so touch devices keep the caption visible. */
+@media (hover: hover) {
+  .addon-card:hover img,
+  .addon-card:focus-visible img { transform: scale(1.06); }
+
+  .addon-card:hover::after,
+  .addon-card:focus-visible::after { opacity: 0; }
+
+  .addon-card:hover .addon-info,
+  .addon-card:focus-visible .addon-info { opacity: 0; transform: translateY(10px); }
+
+  .addon-card:hover .addon-zoom,
+  .addon-card:focus-visible .addon-zoom { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+.addon-card:focus-visible { outline: 3px solid var(--maroon-lt); outline-offset: 2px; }
+
+/* =============================================================================
+   LIGHTBOX
+============================================================================= */
+.addon-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(10,10,10,0.9);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.addon-lightbox.is-open { opacity: 1; visibility: visible; }
+
+.addon-lb-figure {
+  position: relative;
+  max-width: 1000px;
+  width: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.addon-lb-figure img {
+  width: 100%;
+  max-height: 72vh;
+  object-fit: contain;
+  border-radius: 0;
+  background: #000;
+}
+.addon-lb-cap { padding: 1rem 0.5rem 0; text-align: center; }
+.addon-lb-cat {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--maroon-lt);
+}
+.addon-lb-cap h3 { color: var(--white); font-size: clamp(1.4rem, 3vw, 1.9rem); margin: 0.3rem 0; }
+.addon-lb-cap p { color: rgba(255,255,255,0.82); max-width: 56ch; margin: 0.25rem auto 0; font-size: 0.95rem; }
+.addon-lb-price {
+  display: inline-block;
+  margin-top: 0.85rem;
+  background: var(--maroon);
+  color: var(--white);
+  padding: 0.4rem 1.1rem;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+}
+
+/* Controls */
+.addon-lb-close,
+.addon-lb-nav {
+  position: fixed;
+  z-index: 2010;
+  width: 2.85rem;
+  height: 2.85rem;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.14);
+  color: var(--white);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.addon-lb-close:hover,
+.addon-lb-nav:hover { background: rgba(255,255,255,0.3); }
+.addon-lb-close { top: 1.25rem; right: 1.25rem; }
+.addon-lb-close svg { width: 1.3rem; height: 1.3rem; }
+.addon-lb-nav { top: 50%; transform: translateY(-50%); }
+.addon-lb-nav svg { width: 1.5rem; height: 1.5rem; }
+.addon-lb-prev { left: 1rem; }
+.addon-lb-next { right: 1rem; }
+
+@media (min-width: 1080px) {
+  .addon-lb-prev { left: 2rem; }
+  .addon-lb-next { right: 2rem; }
+}
+
+/* =============================================================================
+   CLOSING CTA BAND
+============================================================================= */
+.addon-cta {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  isolation: isolate;
+}
+.addon-cta-bg { position: absolute; inset: 0; z-index: -2; }
+.addon-cta-bg img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.addon-cta::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(100deg, rgba(10,10,10,0.85) 0%, rgba(10,10,10,0.55) 55%, rgba(18,120,199,0.6) 100%);
+}
+.addon-cta-inner { padding: 3.5rem 1.5rem; text-align: center; max-width: 720px; margin: 0 auto; }
+@media (min-width: 768px) { .addon-cta-inner { padding: 5rem 2rem; } }
+.addon-cta-inner .eyebrow { justify-content: center; color: var(--maroon-lt); }
+.addon-cta-inner h2 { color: var(--white); margin-bottom: 1rem; }
+.addon-cta-inner p { color: rgba(255,255,255,0.85); margin: 0 auto 2rem; max-width: 52ch; }
+.addon-cta-btns { display: flex; flex-wrap: wrap; gap: 0.85rem; justify-content: center; }
