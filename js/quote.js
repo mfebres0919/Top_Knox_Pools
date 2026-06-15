@@ -23,6 +23,14 @@
   let currentStep  = 0;
   let answers      = {};
   let steps        = [];
+  let autoTimer    = null;
+
+  /* Auto-advance to the next step shortly after a single choice, so the
+     selection is visible first. Guarded against rapid double-clicks. */
+  function autoNext() {
+    if (autoTimer) clearTimeout(autoTimer);
+    autoTimer = setTimeout(function () { autoTimer = null; advance(); }, 280);
+  }
 
   /* ══════════════════════════════════════════════
      STEP DEFINITIONS
@@ -207,6 +215,7 @@
         grid.querySelectorAll('.quote-service-card').forEach((c) => c.classList.remove('is-selected'));
         card.classList.add('is-selected');
         answers[step.id] = opt.value;
+        autoNext();
       });
       grid.appendChild(card);
     });
@@ -255,6 +264,7 @@
           container.querySelectorAll('.quote-option').forEach((b) => b.classList.remove('is-selected'));
           btn.classList.add('is-selected');
           answers[step.id] = opt.value;
+          autoNext();
         }
       });
 
