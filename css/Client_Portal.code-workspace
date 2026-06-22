@@ -1,0 +1,35 @@
+{
+	"folders": [
+		{
+			"path": "../../Client_Portal"
+		},
+		{
+			"path": "../../Ridgeline Pools"
+		},
+		{
+			"path": "../../Houston_Cool_Pools"
+		},
+		{
+			"path": "../../../../New Web Design Folder/MigsFlow_Website"
+		},
+		{
+			"path": "../../Prime_Time_Pool_Plastering"
+		},
+		{
+			"path": "../../Crystal_Coast_Pools"
+		},
+		{
+			"path": "../../Summit_Custom_Pools"
+		},
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../Meridian Pools"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "Ridgeline Pools",
+		"liveServer.settings.port": 5501
+	}
+}

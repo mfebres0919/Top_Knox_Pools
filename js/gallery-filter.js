@@ -137,34 +137,61 @@ document.addEventListener('DOMContentLoaded', () => {
   const lightboxVideo = document.getElementById('lightboxVideo');
   const lightboxCap   = document.getElementById('lightboxCaption');
   const lightboxClose = document.getElementById('lightboxClose');
+  const lightboxPrev  = document.getElementById('lightboxPrev');
+  const lightboxNext  = document.getElementById('lightboxNext');
+
+  let lbGroup = [];   // elements currently navigable in the lightbox
+  let lbIndex = 0;
+
+  // Exposed so other sections (e.g. Project Series) can open the same lightbox
+  let openLightboxGroup = function () {};
 
   if (lightbox) {
-    const openImage = (src, caption) => {
-      if (lightboxVideo) {
-        lightboxVideo.pause();
-        lightboxVideo.removeAttribute('src');
-        lightboxVideo.style.display = 'none';
-      }
-      lightboxImg.src           = src;
-      lightboxImg.alt           = caption;
-      lightboxImg.style.display = 'block';
-      if (lightboxCap) lightboxCap.textContent = caption;
-      lightbox.classList.add('open');
-      document.body.style.overflow = 'hidden';
+    const captionFor = (el) => {
+      const title = el.dataset.title || '';
+      const loc   = el.dataset.location || '';
+      return loc ? `${title} — ${loc}` : title;
     };
 
-    const openVideo = (src, caption) => {
-      lightboxImg.removeAttribute('src');
-      lightboxImg.style.display = 'none';
-      if (lightboxVideo) {
-        lightboxVideo.src           = src;
-        lightboxVideo.style.display = 'block';
-        lightboxVideo.play().catch(() => {});   // ignore autoplay block
+    const showAt = (index) => {
+      if (!lbGroup.length) return;
+      lbIndex = (index + lbGroup.length) % lbGroup.length;   // wrap around
+      const el = lbGroup[lbIndex];
+      const caption = captionFor(el);
+
+      if (el.dataset.video) {
+        lightboxImg.removeAttribute('src');
+        lightboxImg.style.display = 'none';
+        if (lightboxVideo) {
+          lightboxVideo.src           = el.dataset.video;
+          lightboxVideo.style.display = 'block';
+          lightboxVideo.play().catch(() => {});
+        }
+      } else {
+        if (lightboxVideo) {
+          lightboxVideo.pause();
+          lightboxVideo.removeAttribute('src');
+          lightboxVideo.style.display = 'none';
+        }
+        lightboxImg.src           = el.dataset.img || '';
+        lightboxImg.alt           = caption;
+        lightboxImg.style.display = 'block';
       }
       if (lightboxCap) lightboxCap.textContent = caption;
+
+      /* Only show prev/next when there's more than one item to browse */
+      const showNav = lbGroup.length > 1 ? 'flex' : 'none';
+      if (lightboxPrev) lightboxPrev.style.display = showNav;
+      if (lightboxNext) lightboxNext.style.display = showNav;
+    };
+
+    const openGroup = (items, startIndex) => {
+      lbGroup = items;
+      showAt(startIndex < 0 ? 0 : startIndex);
       lightbox.classList.add('open');
       document.body.style.overflow = 'hidden';
     };
+    openLightboxGroup = openGroup;   // expose to other sections
 
     const closeLightbox = () => {
       lightbox.classList.remove('open');
@@ -176,25 +203,30 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 300);
     };
 
+    const goNext = () => showAt(lbIndex + 1);
+    const goPrev = () => showAt(lbIndex - 1);
+
+    // Gallery cards — group is the cards currently visible (respects the filter)
     projectCards.forEach(card => {
       card.addEventListener('click', () => {
-        const title   = card.dataset.title || '';
-        const loc     = card.dataset.location || '';
-        const caption = loc ? `${title} — ${loc}` : title;
-        if (card.dataset.video) {
-          openVideo(card.dataset.video, caption);
-        } else if (card.dataset.img) {
-          openImage(card.dataset.img, caption);
-        }
+        if (!card.dataset.img && !card.dataset.video) return;
+        const group = [...projectCards].filter(c =>
+          !c.classList.contains('hidden') && (c.dataset.img || c.dataset.video));
+        openGroup(group, group.indexOf(card));
       });
     });
 
     if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+    if (lightboxPrev)  lightboxPrev.addEventListener('click', (e) => { e.stopPropagation(); goPrev(); });
+    if (lightboxNext)  lightboxNext.addEventListener('click', (e) => { e.stopPropagation(); goNext(); });
     lightbox.addEventListener('click', (e) => {
       if (e.target === lightbox) closeLightbox();
     });
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+      if (!lightbox.classList.contains('open')) return;
+      if      (e.key === 'Escape')     closeLightbox();
+      else if (e.key === 'ArrowRight') goNext();
+      else if (e.key === 'ArrowLeft')  goPrev();
     });
   }
 
@@ -240,25 +272,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const initialTab = document.querySelector('.series-tab.active') || seriesTabs[0];
     filterSeries(initialTab.dataset.series);
 
-    // Open a series video in the shared lightbox (#lightbox close handlers above
-    // already pause/clear the video on close).
-    const sLb    = document.getElementById('lightbox');
-    const sLbImg = document.getElementById('lightboxImg');
-    const sLbVid = document.getElementById('lightboxVideo');
-    const sLbCap = document.getElementById('lightboxCaption');
-
+    // Open a series video in the shared lightbox, grouped with the other
+    // playable videos in the active series (so prev/next browses them).
     const openSeriesVideo = (card) => {
-      const src = card.dataset.video;
-      if (!src || !sLb) return;                 // coming soon → no-op
-      if (sLbImg) { sLbImg.removeAttribute('src'); sLbImg.style.display = 'none'; }
-      if (sLbVid) {
-        sLbVid.src = src;
-        sLbVid.style.display = 'block';
-        sLbVid.play().catch(() => {});
-      }
-      if (sLbCap) sLbCap.textContent = card.dataset.title || '';
-      sLb.classList.add('open');
-      document.body.style.overflow = 'hidden';
+      if (!card.dataset.video) return;          // coming soon → no-op
+      const group = [...seriesCards].filter(c =>
+        !c.classList.contains('hidden') && c.dataset.video);
+      openLightboxGroup(group, group.indexOf(card));
     };
 
     seriesCards.forEach(card => {
